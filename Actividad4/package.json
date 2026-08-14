@@ -1,0 +1,22 @@
+{
+  "name": "actividad4-task-manager",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "echo \"Lint step skipped: no ESLint configured for this standalone activity bundle.\""
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.12",
+    "jest": "^29.7.0",
+    "babel-jest": "^29.7.0",
+    "typescript": "^5.6.3"
+  }
+}
