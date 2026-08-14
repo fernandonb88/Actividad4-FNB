@@ -4,30 +4,30 @@
 
 ### Entorno de evaluación
 - Aplicación: Task Manager
-- Plataforma: emulador Android / iOS simulator
-- Herramientas: React Native DevTools, Flipper/Flashlight, Android Studio profiler
-- Objetivo: evaluar tiempo de arranque, renderizado y consumo de memoria
+- Plataforma: emulador Android / simulador iOS
+- Herramientas: React Native DevTools, Flipper/Flashlight y Android Studio Profiler
+- Objetivo: evaluar el tiempo de arranque, el renderizado y el consumo de memoria
 
 ### Métricas evaluadas
 
 #### 1) Tiempo de arranque
-- Medición preliminar: 2.8 s a 4.6 s dependiendo del dispositivo y carga del entorno
-- Observación: la vista principal carga rápidamente por la naturaleza simple de la app, pero la UI realiza varias actualizaciones de estado al iniciar
+- Medición preliminar: entre 2,8 s y 4,6 s según el dispositivo y la carga del entorno
+- Observación: la vista principal carga de forma rápida por la naturaleza simple de la aplicación, pero la interfaz realiza varias actualizaciones de estado al iniciar
 
 #### 2) Uso de memoria
 - Medición preliminar: entre 130 MB y 210 MB en emulador Android
-- Observación: el consumo es razonable para una app pequeña, pero aumenta al intercambiar entre listas y formularios cuando se crean nuevas tareas
+- Observación: el consumo resulta razonable para una app pequeña, pero aumenta al cambiar entre listas y formularios al crear nuevas tareas
 
 #### 3) FPS de animación / renderizado
-- Resultado esperado: estabilidad por encima de 55 FPS en scroll y cambios de estado
-- Observación: la interfaz no presenta animaciones complejas; sin embargo, la lista puede re-renderizar de forma innecesaria cuando se manipulan tareas
+- Resultado esperado: estabilidad por encima de 55 FPS en desplazamientos y cambios de estado
+- Observación: la interfaz no presenta animaciones complejas; sin embargo, la lista puede volver a renderizarse de forma innecesaria cuando se manipulan tareas
 
 ### Cuello de botella identificado
-El principal problema detectado es la re-renderización excesiva del listado de tareas y el estado global del formulario.
+El principal problema detectado es la re-renderización excesiva de la lista de tareas y el estado global del formulario.
 
 - Se actualiza el estado de la lista al insertar o eliminar tareas
-- El componente de pantalla vuelve a renderizar varias subestructuras
-- En una app con más datos, esto sería un cuello de botella de rendimiento
+- El componente de la pantalla vuelve a renderizar varias subestructuras
+- En una aplicación con más datos, esto sería un cuello de botella de rendimiento
 
 ### Propuesta de mejora
 - Memoizar componentes con `React.memo` para `TaskCard` y `TaskList`
@@ -39,10 +39,10 @@ El principal problema detectado es la re-renderización excesiva del listado de 
 
 ## 2. Análisis de seguridad (OWASP Mobile Top 10)
 
-Se revisó la aplicación respecto a vulnerabilidades relevantes para apps móviles.
+Se revisó la aplicación respecto a vulnerabilidades relevantes para aplicaciones móviles.
 
 ### Hallazgo 1: almacenamiento inseguro de datos
-- Riesgo: la app guarda información de tareas en memoria o en estado local sin cifrado
+- Riesgo: la aplicación guarda información de tareas en memoria o en estado local sin cifrado
 - Evaluación: parcialmente inseguro
 - Necesidad: almacenar datos sensibles o persistentes en almacenamiento cifrado
 - Corrección recomendada:
@@ -50,7 +50,7 @@ Se revisó la aplicación respecto a vulnerabilidades relevantes para apps móvi
   - no persistir información sensible en texto plano
 
 ### Hallazgo 2: manejo de comunicaciones sin cifrar / endpoints no validados
-- Riesgo: se usa una URL fija para API (`https://api.taskmanager.com`) y no se valida el origen ni la configuración de entorno
+- Riesgo: se usa una URL fija para la API (`https://api.taskmanager.com`) y no se valida el origen ni la configuración del entorno
 - Evaluación: la comunicación usa HTTPS, pero falta validación estricta del entorno y manejo seguro de configuraciones
 - Corrección recomendada:
   - usar variables de entorno para endpoints
@@ -58,21 +58,21 @@ Se revisó la aplicación respecto a vulnerabilidades relevantes para apps móvi
   - evitar hardcodear URLs en producción
 
 ### Hallazgo 3: exposición de datos en logs / trazas
-- Riesgo: con logs excesivos o mensajes de error que revelen sentido del flujo, se puede filtrar información del sistema
-- Evaluación: la app no presenta evidencia de logs sensibles, pero el código debe evitar exponer contenido de usuario en consola
+- Riesgo: con logs excesivos o mensajes de error que revelen información del flujo, se puede filtrar contenido del sistema
+- Evaluación: la aplicación no presenta evidencia de logs sensibles, pero el código debe evitar exponer contenido del usuario en consola
 - Corrección recomendada:
-  - eliminar `console.log` de producción
+  - eliminar `console.log` en producción
   - registrar solo eventos sin datos personales ni payloads sensibles
 
-### Hallazgo 4: autenticación y autorización insuficientes (si se expande la aplicación)
-- Riesgo: si la app en el futuro consume APIs autenticadas, debe proteger rutas y tokens
-- Evaluación: actualmente no se implementa autenticación, por lo que el riesgo principal es la ausencia de control de acceso cuando se integre con backend real
+### Hallazgo 4: autenticación y autorización insuficientes (si la app se expande)
+- Riesgo: si la aplicación consume APIs autenticadas, debe proteger rutas y tokens
+- Evaluación: actualmente no se implementa autenticación, por lo que el riesgo principal es la ausencia de control de acceso cuando se integre con un backend real
 - Corrección recomendada:
   - usar tokens seguros almacenados en almacenamiento protegido
   - validar sesiones y permisos por endpoint
 
 ### Conclusión de seguridad
-La app actual es pequeña y no expone datos críticos de usuarios; sin embargo, la arquitectura no debería asumir que el almacenamiento local y las llamadas a API son seguros por defecto. Se recomienda reforzar el manejo de datos persistentes y del entorno de ejecución antes de pasar a producción.
+La aplicación actual es pequeña y no expone datos críticos de usuarios; sin embargo, la arquitectura no debería asumir que el almacenamiento local y las llamadas a la API son seguros por defecto. Se recomienda reforzar el manejo de datos persistentes y del entorno de ejecución antes de pasar a producción.
 
 ---
 
@@ -185,9 +185,9 @@ coverageThreshold: {
 
 ## 5. Recomendaciones para el PDF final
 
-Este documento debe exportarse a PDF en formato máximo de 4 páginas con:
+Este documento debe exportarse a PDF en un formato máximo de 4 páginas con:
 - Fuente Arial 12 pt
-- Interlineado 1.5
+- Interlineado 1,5
 - Títulos claros y separación por secciones
 - Capturas de pantalla del workflow ejecutado en GitHub Actions
 
@@ -197,9 +197,9 @@ Este documento debe exportarse a PDF en formato máximo de 4 páginas con:
 
 ### Repositorio
 - Enlace o referencia al repositorio del proyecto correspondiente
-- Indicar rama de entrega o directorio con la actividad realizada
+- Indicar la rama de entrega o el directorio con la actividad realizada
 
 ---
 
 ## 6. Conclusión
-La aplicación Task Manager cumple con una base sólida para pruebas unitarias y de contrato, y la configuración de CI con cobertura es una buena práctica para asegurar calidad. El principal trabajo adicional para esta actividad es documentar de forma clara el análisis de rendimiento, las vulnerabilidades detectadas y la evidencia de validación del pipeline en GitHub Actions.
+La aplicación Task Manager cuenta con una base sólida para pruebas unitarias y de contrato, y la configuración de CI con cobertura es una buena práctica para asegurar calidad. El trabajo adicional principal para esta actividad es documentar de forma clara el análisis de rendimiento, las vulnerabilidades detectadas y la evidencia de validación del pipeline en GitHub Actions.
