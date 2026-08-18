@@ -1,4 +1,4 @@
-name: CI Task Manager Quality Checks
+name: CI - Test Suite & Coverage Validation
 
 on:
   push:
@@ -8,31 +8,207 @@ on:
   pull_request:
     branches:
       - main
+      - develop
+
+env:
+  NODE_VERSION: '20'
+  COVERAGE_THRESHOLD: 70
 
 jobs:
-  quality-checks:
+  # ============================================================================
+  # Job 1: Unit Tests & Integration Tests
+  # ============================================================================
+  test-suite:
+    name: Run Test Suite
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Run lint if configured
+      - name: 🧪 Run all tests (Unit + Components + Integration)
+        run: npm test -- --coverage --ci --passWithNoTests
+        continue-on-error: false
+
+      - name: 📊 Generate coverage reports
+        if: always()
+        run: npm run test:coverage -- --ci
+
+      - name: 📈 Upload coverage to artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+  # ============================================================================
+  # Job 2: Coverage Threshold Validation
+  # ============================================================================
+  coverage-check:
+    name: Validate Coverage Threshold
+    runs-on: ubuntu-latest
+    needs: test-suite
+    if: always()
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎯 Verify coverage threshold (${{ env.COVERAGE_THRESHOLD }}%)
         run: |
-          if npm run | grep -q "lint"; then
-            npm run lint
+          echo "═════════════════════════════════════════════════════════════"
+          echo "📊 COVERAGE VALIDATION REPORT"
+          echo "═════════════════════════════════════════════════════════════"
+          
+          npm run test:coverage -- --ci 2>&1 | tee coverage-output.txt
+          
+          # Extract coverage summary from Jest output
+          if grep -q "Test Suites:.*passed" coverage-output.txt; then
+            echo ""
+            echo "✅ All test suites passed!"
+            echo ""
+            
+            # Check if coverage threshold file exists
+            if [ -f "coverage/coverage-summary.json" ]; then
+              echo "📈 Coverage Summary:"
+              node -e "
+                const summary = require('./coverage/coverage-summary.json').total;
+                const threshold = ${{ env.COVERAGE_THRESHOLD }};
+                
+                console.log('');
+                console.log('  Lines:       ' + summary.lines.pct + '%');
+                console.log('  Statements:  ' + summary.statements.pct + '%');
+                console.log('  Functions:   ' + summary.functions.pct + '%');
+                console.log('  Branches:    ' + summary.branches.pct + '%');
+                console.log('');
+                console.log('  Threshold:   ' + threshold + '%');
+                console.log('');
+                
+                const metrics = [
+                  { name: 'Lines',      actual: summary.lines.pct,      min: threshold },
+                  { name: 'Statements', actual: summary.statements.pct, min: threshold },
+                  { name: 'Functions',  actual: summary.functions.pct,  min: threshold },
+                  { name: 'Branches',   actual: summary.branches.pct,   min: threshold }
+                ];
+                
+                let allPass = true;
+                metrics.forEach(m => {
+                  const status = m.actual >= m.min ? '✅' : '❌';
+                  console.log('  ' + status + ' ' + m.name.padEnd(12) + ': ' + m.actual + '% >= ' + m.min + '%');
+                  if (m.actual < m.min) allPass = false;
+                });
+                
+                console.log('');
+                
+                if (allPass) {
+                  console.log('✅ ALL COVERAGE THRESHOLDS MET!');
+                  process.exit(0);
+                } else {
+                  console.log('❌ COVERAGE THRESHOLD NOT MET!');
+                  process.exit(1);
+                }
+              "
+            else
+              echo "⚠️  Coverage summary not found. Checking Jest configuration..."
+              exit 1
+            fi
           else
-            echo "No lint script detected; skipping lint."
+            echo "❌ Tests failed! Stopping coverage check."
+            exit 1
           fi
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage --ci
+      - name: 📊 Download coverage artifacts
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: 📝 Comment PR with coverage results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8')).total;
+            const threshold = ${{ env.COVERAGE_THRESHOLD }};
+            
+            const status = (pct, min) => pct >= min ? '✅' : '❌';
+            const lines = coverage.lines.pct;
+            const statements = coverage.statements.pct;
+            const functions = coverage.functions.pct;
+            const branches = coverage.branches.pct;
+            
+            const allPass = [lines, statements, functions, branches].every(pct => pct >= threshold);
+            
+            const comment = `## 📊 Coverage Report
+
+| Metric | Coverage | Threshold | Status |
+|--------|----------|-----------|--------|
+| Lines | ${lines}% | ${threshold}% | ${status(lines, threshold)} |
+| Statements | ${statements}% | ${threshold}% | ${status(statements, threshold)} |
+| Functions | ${functions}% | ${threshold}% | ${status(functions, threshold)} |
+| Branches | ${branches}% | ${threshold}% | ${status(branches, threshold)} |
+
+${allPass ? '✅ **All coverage thresholds met!**' : '❌ **Coverage thresholds not met. Please improve code coverage.**'}
+
+[View Coverage Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  # ============================================================================
+  # Job 3: Summary & Status Report
+  # ============================================================================
+  summary:
+    name: Test Execution Summary
+    runs-on: ubuntu-latest
+    needs: [test-suite, coverage-check]
+    if: always()
+
+    steps:
+      - name: 📊 Generate Summary Report
+        run: |
+          echo "═════════════════════════════════════════════════════════════"
+          echo "🎯 CI/CD PIPELINE EXECUTION SUMMARY"
+          echo "═════════════════════════════════════════════════════════════"
+          echo ""
+          echo "✅ Tests Suite Status:       ${{ needs.test-suite.result }}"
+          echo "✅ Coverage Check Status:    ${{ needs.coverage-check.result }}"
+          echo ""
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch:     ${{ github.ref_name }}"
+          echo "Commit:     ${{ github.sha }}"
+          echo "Run ID:     ${{ github.run_id }}"
+          echo ""
+          
+          if [ "${{ needs.test-suite.result }}" = "success" ] && [ "${{ needs.coverage-check.result }}" = "success" ]; then
+            echo "🎉 PIPELINE PASSED - All checks successful!"
+            exit 0
+          else
+            echo "❌ PIPELINE FAILED - Please review logs above"
+            exit 1
+          fi
