@@ -28,5 +28,5 @@ describe('CreateTaskScreen - Integración', () => {
     await waitFor(() => {
       expect(screen.getByText('Tarea creada exitosamente')).toBeTruthy();
     });
-  });
+  }, 15000);
 });

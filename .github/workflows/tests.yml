@@ -160,18 +160,22 @@ jobs:
             
             const allPass = [lines, statements, functions, branches].every(pct => pct >= threshold);
             
-            const comment = `## 📊 Coverage Report
+            const commentLines = [
+              '## 📊 Coverage Report',
+              '',
+              '| Metric | Coverage | Threshold | Status |',
+              '|--------|----------|-----------|--------|',
+              `| Lines | ${lines}% | ${threshold}% | ${status(lines, threshold)} |`,
+              `| Statements | ${statements}% | ${threshold}% | ${status(statements, threshold)} |`,
+              `| Functions | ${functions}% | ${threshold}% | ${status(functions, threshold)} |`,
+              `| Branches | ${branches}% | ${threshold}% | ${status(branches, threshold)} |`,
+              '',
+              allPass ? '✅ **All coverage thresholds met!**' : '❌ **Coverage thresholds not met. Please improve code coverage.**',
+              '',
+              `[View Coverage Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            ];
 
-| Metric | Coverage | Threshold | Status |
-|--------|----------|-----------|--------|
-| Lines | ${lines}% | ${threshold}% | ${status(lines, threshold)} |
-| Statements | ${statements}% | ${threshold}% | ${status(statements, threshold)} |
-| Functions | ${functions}% | ${threshold}% | ${status(functions, threshold)} |
-| Branches | ${branches}% | ${threshold}% | ${status(branches, threshold)} |
-
-${allPass ? '✅ **All coverage thresholds met!**' : '❌ **Coverage thresholds not met. Please improve code coverage.**'}
-
-[View Coverage Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+            const comment = commentLines.join('\n');
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,

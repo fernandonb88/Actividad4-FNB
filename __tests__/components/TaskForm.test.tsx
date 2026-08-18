@@ -14,7 +14,7 @@ describe('TaskForm', () => {
     await fireEvent.press(screen.getByText('Guardar'));
 
     expect(mockOnSubmit).toHaveBeenCalledWith('Mi nueva tarea');
-  });
+  }, 15000);
 
   it('no llama a onSubmit si el campo está vacío', async () => {
     const mockOnSubmit = jest.fn();

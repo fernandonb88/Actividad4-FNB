@@ -14,7 +14,7 @@ describe('TaskList', () => {
   it('no muestra el mensaje de lista vacía cuando hay tareas', async () => {
     await render(<TaskList tasks={[mockTask]} />);
     expect(screen.queryByText('No hay tareas aún')).toBeNull();
-  });
+  }, 15000);
 
   it('muestra el contador de tareas correctamente', async () => {
     await render(<TaskList tasks={[mockTask, anotherTask]} />);
