@@ -162,9 +162,9 @@ Se realizó un análisis de seguridad contra tres puntos críticos del OWASP Mob
 
 | Vulnerabilidad | Clasificación OWASP | Evaluación en Task Manager | Riesgo | Estado |
 |---|---|---|---|---|
-| M2 - Insecure Data Storage | Almacenamiento Inseguro | Parcialmente Mitigado | MEDIO | ⚠️ |
-| M3 - Insecure Communication | Comunicaciones sin Cifrar | Implementado | BAJO | ✅ |
-| M1 - Improper Credential Usage | Exposición de Datos en Logs | Mitigado | BAJO | ✅ |
+| M2 - Insecure Data Storage | Almacenamiento Inseguro | Parcialmente Mitigado | MEDIO | Parcialmente mitigado |
+| M3 - Insecure Communication | Comunicaciones sin Cifrar | Implementado | BAJO | Mitigado |
+| M1 - Improper Credential Usage | Exposición de Datos en Logs | Mitigado | BAJO | Mitigado |
 
 ---
 
@@ -453,10 +453,10 @@ Se configuró un workflow de GitHub Actions con 3 jobs principales que se ejecut
 
 | Componente | Descripción | Estado |
 |---|---|---|
-| Trigger Automático | Se ejecuta en push y pull request | ✅ Configurado |
+| Trigger Automático | Se ejecuta en push y pull request sobre main, develop y Actividad-4 | Configurado |
 | Node.js 20 | Versión de runtime | ✅ Especificada |
 | npm Cache | Caché de dependencias | ✅ Habilitado |
-| Test Suite | Ejecución de 91 tests | ✅ Automático |
+| Test Suite | Ejecución de 77 tests | Configurado |
 | Coverage Report | Generación de reportes | ✅ Automático |
 | Threshold Validation | Validación de umbral 70% | ✅ Configurado |
 | Artifact Upload | Almacenamiento de reportes | ✅ 30 días |
@@ -481,9 +481,9 @@ Pasos:
 6. Carga de artefactos (retención: 30 días)
 ```
 
-**Resultados Esperados:**
-- Tests: 91/91 pasando ✅
-- Tiempo de ejecución: ~22 segundos
+**Resultados Verificados:**
+- Tests: 77/77 pasando
+- Tiempo de ejecución local: 46.023 segundos
 - Artefactos generados: coverage/lcov-report/
 
 #### Job 2: Coverage Validation
@@ -584,7 +584,7 @@ module.exports = {
 **Indicadores de Éxito del Pipeline:**
 
 ✅ Workflow file válido: `.github/workflows/tests.yml` presente  
-✅ Triggers configurados: push en main/develop y pull_request  
+✅ Triggers configurados: push y pull_request en main, develop y Actividad-4  
 ✅ Node version: 20 especificada  
 ✅ Coverage threshold: 70% definido  
 ✅ Artifact retention: 30 días  
@@ -607,7 +607,7 @@ module.exports = {
 |---|---|---|
 | Identificar cuellos de botella de rendimiento | ✅ SÍ | 2 métricas medidas, 1 cuello botella identificado |
 | Validar compatibilidad en versiones | ✅ SÍ | Pruebas E2E validadas en emulador |
-| Configurar pipeline CI/CD automático | ✅ SÍ | GitHub Actions con 3 jobs, 100% de cobertura |
+| Configurar pipeline CI/CD automático | Sí | GitHub Actions con 3 jobs y umbral mínimo del 70% |
 
 ### 6.2 Hallazgos Principales
 
