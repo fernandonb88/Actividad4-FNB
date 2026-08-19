@@ -12,17 +12,18 @@ describe('TaskCard - Accesibilidad', () => {
   it('el botón de eliminar tiene un accessibilityLabel descriptivo', async () => {
     await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);
     const deleteButton = screen.getByLabelText('Eliminar tarea Estudiar accesibilidad');
-    expect(deleteButton).toBeTruthy();
+    expect(deleteButton).toHaveProp('accessibilityLabel', 'Eliminar tarea Estudiar accesibilidad');
   });
 
   it('el contenedor de la tarea tiene el rol correcto', async () => {
     await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);
     const card = screen.getByRole('button');
-    expect(card).toBeTruthy();
+    expect(card).toHaveProp('accessible', true);
+    expect(card).toHaveProp('accessibilityRole', 'button');
   });
 
   it('el estado de la tarea es anunciado al lector de pantalla', async () => {
     await render(<TaskCard task={mockTask} onDelete={jest.fn()} />);
-    expect(screen.getByText('○ Pendiente')).toBeTruthy();
+    expect(screen.getByText('○ Pendiente')).toHaveTextContent('○ Pendiente');
   });
 });

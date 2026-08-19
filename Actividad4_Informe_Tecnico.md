@@ -43,6 +43,8 @@ Statements: 84.61% | Branches: 87.8% | Functions: 81.08% | Lines: 86.48%
 
 Tambien se ejecuto `npx tsc --noEmit` dentro de `Actividad4` y no se encontraron errores de TypeScript.
 
+La prueba de accesibilidad `__tests__/accessibility/TaskCard.a11y.test.tsx` paso 3/3 casos y utiliza los matchers `toHaveProp` y `toHaveTextContent` de `@testing-library/jest-native` para verificar propiedades, no solo la existencia de elementos. La carpeta `.maestro/` contiene dos flujos documentados, pero Maestro no esta instalado en este entorno; por tanto, no se presenta una ejecucion E2E Maestro como evidencia.
+
 ## 2. Analisis de rendimiento
 
 El modulo `Actividad4/src/performanceChecks.ts` evalua tres metricas y reporta problemas cuando se superan estos limites: arranque mayor a 4,000 ms, memoria mayor a 200 MB y FPS menor a 55.
