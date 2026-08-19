@@ -47,6 +47,17 @@ Tambien se ejecuto npx tsc --noEmit dentro de Actividad4 y no se encontraron err
 
 La prueba de accesibilidad __tests__/accessibility/TaskCard.a11y.test.tsx paso 3 de 3 casos y utiliza los matchers toHaveProp y toHaveTextContent de @testing-library/jest-native para verificar propiedades reales del componente. La carpeta .maestro/ contiene dos flujos documentados, pero Maestro no esta instalado en este entorno; por tanto, no se presenta una ejecucion E2E Maestro como evidencia.
 
+MATRIZ DE CUMPLIMIENTO Y EVIDENCIAS
+
+REQUISITO              EVIDENCIA                                             RESULTADO
+Integracion            __tests__/integration/CreateTaskScreen.test.tsx       1 flujo aprobado
+Accesibilidad          __tests__/accessibility/TaskCard.a11y.test.tsx         3 casos con jest-native
+Contrato Zod           Actividad4/src/taskSchema.ts y su prueba               2 casos aprobados
+Rendimiento            Actividad4/src/performanceChecks.ts y su prueba        Umbrales evaluados
+Seguridad OWASP        Actividad4/src/__tests__/securityAudit.test.ts         2 verificaciones aprobadas
+Compatibilidad         Actividad4/src/compatibilityMatrix.ts y su prueba      2 escenarios aprobados
+Pipeline               Actividad4/.github/workflows/tests.yml                 Publicado en GitHub
+
 ============================================================
 2. ANALISIS DE RENDIMIENTO
 ============================================================
@@ -59,7 +70,7 @@ El archivo Actividad4/src/performanceChecks.ts evalua tres metricas mediante umb
 - Uso de memoria: maximo 200 MB.
 - Frame rate: minimo 55 FPS.
 
-El escenario documentado corresponde a un emulador Android API 33 con 4 GB de RAM, durante el arranque de la aplicacion y operaciones basicas de tareas.
+El escenario documentado corresponde a un emulador Android API 33 con 4 GB de RAM, durante el arranque de la aplicacion y operaciones basicas de tareas. No se atribuye a Flashlight o Reassure porque esas herramientas no fueron ejecutadas en este entorno.
 
 2.2 Resultados
 

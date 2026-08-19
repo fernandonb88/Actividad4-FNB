@@ -45,11 +45,21 @@ Tambien se ejecuto `npx tsc --noEmit` dentro de `Actividad4` y no se encontraron
 
 La prueba de accesibilidad `__tests__/accessibility/TaskCard.a11y.test.tsx` paso 3/3 casos y utiliza los matchers `toHaveProp` y `toHaveTextContent` de `@testing-library/jest-native` para verificar propiedades, no solo la existencia de elementos. La carpeta `.maestro/` contiene dos flujos documentados, pero Maestro no esta instalado en este entorno; por tanto, no se presenta una ejecucion E2E Maestro como evidencia.
 
+| Requisito | Evidencia | Resultado |
+|---|---|---|
+| Integracion de formulario | `__tests__/integration/CreateTaskScreen.test.tsx` | 1 flujo aprobado |
+| Accesibilidad | `__tests__/accessibility/TaskCard.a11y.test.tsx` | 3 casos aprobados con jest-native |
+| Contrato Zod | `Actividad4/src/taskSchema.ts` y `Actividad4/src/__tests__/taskSchema.test.ts` | 2 casos aprobados |
+| Rendimiento | `Actividad4/src/performanceChecks.ts` y su prueba | Umbrales evaluados |
+| Seguridad OWASP | `Actividad4/src/__tests__/securityAudit.test.ts` | 2 verificaciones estaticas aprobadas |
+| Compatibilidad | `Actividad4/src/compatibilityMatrix.ts` y su prueba | 2 escenarios aprobados |
+| Pipeline | `Actividad4/.github/workflows/tests.yml` | Publicado y ejecutable en GitHub |
+
 ## 2. Analisis de rendimiento
 
 El modulo `Actividad4/src/performanceChecks.ts` evalua tres metricas y reporta problemas cuando se superan estos limites: arranque mayor a 4,000 ms, memoria mayor a 200 MB y FPS menor a 55.
 
-El escenario documentado fue un emulador Android API 33 con 4 GB de RAM, durante el arranque y operaciones basicas de tareas:
+El escenario documentado fue un emulador Android API 33 con 4 GB de RAM, durante el arranque y operaciones basicas de tareas. La medicion se presenta como evidencia del escenario; no se atribuye a Flashlight o Reassure porque esas herramientas no fueron ejecutadas en este entorno:
 
 | Metrica | Resultado | Umbral | Estado |
 |---|---:|---:|---|
