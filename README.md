@@ -4,13 +4,13 @@
 
 Este proyecto implementa un **Task Manager (Gestor de Tareas)** en React Native con un enfoque comprehensivo en testing. La Actividad 4 requiere la implementación de pruebas de integración, E2E y accesibilidad, con validación de seguridad, rendimiento y contratos de API.
 
-**Estado**: ✅ **COMPLETADO** | **Cobertura**: 84.61% | **Tests**: 91/91 ✓ | **Suite**: 19/19 ✓
+**Estado**: ✅ **COMPLETADO** | **Cobertura**: 84.61% statements, 87.8% branches | **Tests**: 85/85 ✓ | **Suites**: 18/18 ✓
 
 ---
 
 ## 🎯 Estructura de Actividad 4: Implementación Realizada
 
-### 1. **Pruebas Unitarias & Componentes** (19 suites de test)
+### 1. **Pruebas Unitarias & Componentes** (18 suites de test)
 ```
 __tests__/
 ├── components/
@@ -157,7 +157,7 @@ const metrics = {
    - useCreateTask: 73.33% (caminos alternativos)
 
 ### Fase 5: Validación de Calidad
-1. Cobertura de código verificada (84.61%)
+1. Cobertura de código verificada (84.61% statements, 87.8% branches)
 2. Todos los criterios de Actividad 4 implementados
 3. GitHub Actions pipeline validado
 4. Documentación completada
@@ -206,7 +206,7 @@ coverage-check:
 summary:
   needs: [test-suite, coverage-check]
   steps:
-    - run: npm run test:summary
+    - run: echo "Resumen generado en los logs del job"
 ```
 
 #### Artifacts & Reporting
@@ -221,7 +221,7 @@ summary:
 
 ```
 task-manager-testing-lab/
-├── __tests__/                           # Tests principales (91 tests)
+├── __tests__/                           # Tests principales (77 tests)
 │   ├── components/                      # Component unit tests
 │   ├── hooks/                           # Custom hooks tests
 │   ├── utils/                           # Utility functions tests
@@ -256,17 +256,16 @@ task-manager-testing-lab/
 │   │   └── server.ts                    # Mock server config
 │   └── types.ts                         # TypeScript interfaces
 │
-├── Actividad4/                          # Activity 4 specific tests
+├── Actividad4/                          # Entrega aislada de Actividad 4
 │   ├── src/
-│   │   ├── performanceChecks.ts         # Performance metrics
-│   │   ├── compatibilityMatrix.ts       # Version compatibility
-│   │   ├── taskSchema.ts                # Contract schemas
-│   │   └── __tests__/                   # Activation 4 tests
+│   │   ├── performanceChecks.ts         # Evaluación de métricas
+│   │   ├── compatibilityMatrix.ts       # Compatibilidad
+│   │   ├── taskSchema.ts                # Contrato Zod
+│   │   └── __tests__/                   # 4 suites, 8 pruebas
 │   │       ├── performanceChecks.test.ts
 │   │       ├── compatibilityMatrix.test.ts
-│   │       ├── contract.test.ts
-│   │       ├── securityAudit.test.ts
-│   │       └── performance-security-contract.test.ts
+│   │       ├── taskSchema.test.ts
+│   │       └── securityAudit.test.ts
 │
 ├── .github/workflows/
 │   └── tests.yml                        # GitHub Actions CI/CD
@@ -320,8 +319,8 @@ npm test -- --coverage --ci --passWithNoTests
 
 ### Salida Esperada
 ```
-Test Suites: 19 passed, 19 total
-Tests:       91 passed, 91 total
+Test Suites: 18 passed, 18 total
+Tests:       85 passed, 85 total
 Snapshots:   0 total
 Time:        ~27 seconds
 Coverage:    84.61% statements, 87.8% branches
@@ -362,8 +361,8 @@ Status:      ✅ PASSING
 | **Pruebas de Accesibilidad** | TaskCard.a11y.test.tsx | 3 WCAG 2.1 tests | ✅ |
 | **Pruebas de Seguridad** | securityAudit.enhanced.test.ts | 4 OWASP tests | ✅ |
 | **Contract Testing** | taskApi.contract.test.ts | 2 Zod validation tests | ✅ |
-| **Pruebas de Rendimiento** | performanceChecks.test.ts | 3 metrics tests | ✅ |
-| **Coverage Threshold (70%)** | 84.61% achieved | Coverage report | ✅ |
+| **Pruebas de Rendimiento** | Actividad4/src/__tests__/performanceChecks.test.ts | Threshold evaluation | ✅ |
+| **Coverage Threshold (70%)** | 84.61% statements / 87.8% branches | Coverage report | ✅ |
 | **GitHub Actions CI/CD** | tests.yml configured | 3-job pipeline | ✅ |
 | **Test Documentation** | README + guides | 8 markdown docs | ✅ |
 
@@ -385,8 +384,8 @@ Status:      ✅ PASSING
 ## 🔍 Verificación & Validación
 
 ### Pre-Submission Checklist
-- [x] Todos los 91 tests pasan
-- [x] Cobertura de 84.61% (exceeds 70% threshold)
+- [x] Todos los 85 tests pasan en el proyecto raíz
+- [x] Cobertura de 84.61% statements y 87.8% branches (exceeds 70% threshold)
 - [x] GitHub Actions pipeline configurado
 - [x] Accesibilidad WCAG 2.1 validada
 - [x] Seguridad OWASP validada
@@ -417,8 +416,8 @@ npm run lint
 
 La Actividad 4 **ha sido completamente implementada y validada**. El proyecto cuenta con:
 
-✅ **91 tests** (100% passing)  
-✅ **84.61% code coverage** (exceeds 70% threshold)  
+✅ **85 tests** en el proyecto raíz (100% passing)  
+✅ **84.61% statements / 87.8% branches** (exceeds 70% threshold)  
 ✅ **5 criterios de evaluación** completados  
 ✅ **GitHub Actions CI/CD** funcionando  
 ✅ **Documentación completa** de la implementación  

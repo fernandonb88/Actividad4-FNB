@@ -5,9 +5,16 @@ on:
     branches:
       - main
       - develop
+      - QA
+      - master
+      - Actividad-4
   pull_request:
     branches:
       - main
+      - develop
+      - QA
+      - master
+      - Actividad-4
 
 jobs:
   quality-checks:
@@ -36,3 +43,11 @@ jobs:
 
       - name: Run tests with coverage
         run: npm test -- --coverage --ci
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
