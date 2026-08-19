@@ -2,9 +2,9 @@
 
 ## 📋 Descripción General
 
-Este proyecto implementa un **Task Manager (Gestor de Tareas)** en React Native con un enfoque comprehensivo en testing. La Actividad 4 requiere la implementación de pruebas de integración, E2E y accesibilidad, con validación de seguridad, rendimiento y contratos de API.
+Este proyecto implementa un **Task Manager (Gestor de Tareas)** en React Native con un enfoque comprehensivo en testing. La Actividad 4 incluye una prueba de integración, flujos Maestro documentados, pruebas de accesibilidad y validaciones de seguridad, rendimiento y contratos de API.
 
-**Estado**: ✅ **COMPLETADO** | **Cobertura**: 84.61% statements, 87.8% branches | **Tests**: 85/85 ✓ | **Suites**: 18/18 ✓
+**Estado**: ✅ **IMPLEMENTADO Y VALIDADO LOCALMENTE** | **Cobertura**: 84.61% statements, 87.8% branches | **Tests**: 85/85 ✓ | **Suites**: 18/18 ✓
 
 ---
 
@@ -37,8 +37,8 @@ __tests__/
 └── setup.test.ts                   ✓ 1 test  | Jest setup validation
 ```
 
-### 2. **Pruebas de Integración (E2E)**
-- **CreateTaskScreen Integration Test** (Actividad 4 - Integración)
+### 2. **Prueba de Integración**
+- **CreateTaskScreen Integration Test** (flujo de integración en Jest)
   - ✓ Valida flujo completo: Input → Validación → Save → Success Message
   - ✓ Uso de `waitFor` para operaciones asincrónicas
   - ✓ Timeout: 15000ms (ajustado para operaciones de red)
@@ -53,15 +53,11 @@ __tests__/
   - ✓ 3/3 tests passing
 
 ### 4. **Contract Testing (API Contracts)**
-  - ✓ Zod schema validation for request/response
-  - ✓ 4 schemas: TaskSchema, TaskArraySchema, CreateTaskRequestSchema, CreateTaskResponseSchema
-  - ✓ Validación de datos 3-item array
-  - ✓ Validación de errores (4+ error violations)
-  - ✓ 2/2 tests passing
-   - `zod` para contract validation
-   - `msw` para API mocking
-3. Configuración de `jest.config.js` y `tsconfig.json`
-4. Setup de Babel y Metro
+  - ✓ `Actividad4/src/taskSchema.ts` define `TaskSchema` con Zod
+  - ✓ Valida tipos, campos obligatorios, fecha ISO y prioridad permitida
+  - ✓ Incluye una respuesta válida y otra inválida
+  - ✓ 2/2 pruebas de contrato aprobadas
+  - `zod` se utiliza para la validación del contrato y `msw` para simular la API del proyecto raíz
 
 ### Fase 3: Implementación de Tests
 
@@ -80,7 +76,7 @@ describe('ComponentName', () => {
 - Validación de outputs visuales
 - Mocking de callbacks
 
-#### B. Pruebas de Integración (E2E)
+#### B. Prueba de Integración
 ```typescript
 // CreateTaskScreen - flujo completo
 describe('CreateTaskScreen - Integración', () => {
@@ -107,12 +103,12 @@ it('tiene accessibilityLabel para screen readers', () => {
 
 #### D. Contract Testing con Zod
 ```typescript
-// taskApi.contract.test.ts
+// Actividad4/src/__tests__/taskSchema.test.ts
 const TaskSchema = z.object({
   id: z.string(),
   title: z.string().min(1),
-  status: z.enum(['pending', 'completed']),
-  dueDate: z.string().optional(),
+  completed: z.boolean(),
+  createdAt: z.string(),
 });
 
 it('valida contrato de respuesta de API', () => {
@@ -226,7 +222,7 @@ task-manager-testing-lab/
 │   ├── hooks/                           # Custom hooks tests
 │   ├── utils/                           # Utility functions tests
 │   ├── contract/                        # API contract validation
-│   ├── integration/                     # E2E integration tests
+│   ├── integration/                     # Integration tests
 │   ├── accessibility/                   # WCAG 2.1 compliance
 │   ├── security/                        # OWASP security audits
 │   └── setup.test.ts                    # Jest setup validation
@@ -281,23 +277,10 @@ task-manager-testing-lab/
 │   ├── package.json                     # Dependencies
 │   └── app.json                         # Expo app config
 │
-├── Coverage Reports
-│   └── coverage/                        # Generated coverage data
-│       ├── lcov-report/                 # HTML report
-│       ├── lcov.info                    # LCOV format
-│       └── coverage-final.json          # JSON format
-│
-├── Documentation
-│   ├── README.md                        # This file
-│   ├── VALIDATION_REPORT.md             # Activity 4 validation
-│   ├── VERIFICATION_CHECKLIST.md        # Completion checklist
-│   ├── RESUMEN_EJECUTIVO.md             # Executive summary
-│   ├── README_ENTREGA.md                # Delivery guide
-│   ├── TABLERO_ESTADO.md                # Status dashboard
-│   └── test-execution-detailed.log      # Test execution logs
-│
-└── Logs
-    └── test-execution-detailed.log      # Complete test output
+└── Documentation
+  ├── README.md                        # Project documentation
+  ├── Actividad4_Informe_Tecnico.md    # Technical delivery report
+  └── Actividad4_Informe_Final_Para_Word.txt
 ```
 
 ---
@@ -340,7 +323,7 @@ Status:      ✅ PASSING
 | Overall | 84.61% | ✅ Exceeds 70% threshold by 14.61% |
 
 ### Test Execution Time
-- Total: ~27 seconds
+- Total: 14.33 seconds in the latest local run
 - Per suite: 0.5-20 seconds
 - Bottleneck: Components with async operations (15-20s timeout)
 
@@ -357,34 +340,29 @@ Status:      ✅ PASSING
 
 | Criterion | Implementation | Evidence | Status |
 |-----------|-----------------|----------|--------|
-| **Pruebas de Integración (E2E)** | CreateTaskScreen.test.tsx | 1 full workflow test | ✅ |
+| **Prueba de Integración** | CreateTaskScreen.test.tsx | 1 complete workflow test | ✅ |
 | **Pruebas de Accesibilidad** | TaskCard.a11y.test.tsx | 3 WCAG 2.1 tests | ✅ |
 | **Pruebas de Seguridad** | securityAudit.enhanced.test.ts | 4 OWASP tests | ✅ |
 | **Contract Testing** | taskApi.contract.test.ts | 2 Zod validation tests | ✅ |
 | **Pruebas de Rendimiento** | Actividad4/src/__tests__/performanceChecks.test.ts | Threshold evaluation | ✅ |
 | **Coverage Threshold (70%)** | 84.61% statements / 87.8% branches | Coverage report | ✅ |
 | **GitHub Actions CI/CD** | tests.yml configured | 3-job pipeline | ✅ |
-| **Test Documentation** | README + guides | 8 markdown docs | ✅ |
+| **Test Documentation** | README + technical report | 2 main documents | ✅ |
 
 ---
 
 ## 📚 Documentación Disponible
 
-1. **VALIDATION_REPORT.md** - Reporte detallado de validación
-2. **VERIFICATION_CHECKLIST.md** - Checklist de completitud
-3. **RESUMEN_EJECUTIVO.md** - Resumen ejecutivo para stakeholders
-4. **README_ENTREGA.md** - Guía de entrega
-5. **TABLERO_ESTADO.md** - Dashboard visual de estado
-6. **MAESTRO_INDEX.md** - Índice maestro de documentación
-7. **GUIA_VISUAL_NAVEGACION.md** - Guía de navegación visual
-8. **test-execution-detailed.log** - Logs de ejecución completos
+1. **Actividad4_Informe_Tecnico.md** - Informe técnico de la entrega.
+2. **Actividad4_Informe_Final_Para_Word.txt** - Versión de apoyo para copiar a Word.
+3. **README.md** - Descripción y comandos del proyecto.
 
 ---
 
 ## 🔍 Verificación & Validación
 
 ### Pre-Submission Checklist
-- [x] Todos los 85 tests pasan en el proyecto raíz
+- [x] Las 18 suites y 85 pruebas pasan en el proyecto raíz
 - [x] Cobertura de 84.61% statements y 87.8% branches (exceeds 70% threshold)
 - [x] GitHub Actions pipeline configurado
 - [x] Accesibilidad WCAG 2.1 validada
@@ -414,16 +392,16 @@ npm run lint
 
 ## 🎯 Conclusión
 
-La Actividad 4 **ha sido completamente implementada y validada**. El proyecto cuenta con:
+La Actividad 4 **ha sido implementada y validada localmente**. El proyecto cuenta con:
 
 ✅ **85 tests** en el proyecto raíz (100% passing)  
 ✅ **84.61% statements / 87.8% branches** (exceeds 70% threshold)  
-✅ **5 criterios de evaluación** completados  
-✅ **GitHub Actions CI/CD** funcionando  
+✅ **Criterios principales de evaluación** cubiertos
+✅ **GitHub Actions CI** configurado
 ✅ **Documentación completa** de la implementación  
 ✅ **Herramientas profesionales** integradas (Jest, TypeScript, Zod, MSW)  
 
-El sistema está **listo para producción** con garantías de calidad, seguridad y accesibilidad.
+La ejecución remota final debe realizarse después de subir los cambios de esta entrega. Los flujos Maestro están documentados, pero requieren un entorno con Maestro instalado para aportar evidencia E2E adicional.
 
 ---
 

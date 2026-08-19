@@ -16,7 +16,7 @@ La actividad tiene archivos propios dentro de `Actividad4/`, diferentes de los t
 - `Actividad4/src/__tests__/performanceChecks.test.ts`: umbrales de rendimiento.
 - `Actividad4/src/__tests__/securityAudit.test.ts`: auditoria estatica del servicio real.
 - `Actividad4/src/__tests__/compatibilityMatrix.test.ts`: versiones, resoluciones y densidades.
-- `Actividad4/.github/workflows/tests.yml`: workflow de GitHub Actions.
+- `.github/workflows/tests.yml`: workflow de GitHub Actions reconocido por GitHub.
 
 Comando ejecutado desde la raiz del proyecto:
 
@@ -25,7 +25,7 @@ cd Actividad4
 npm test -- --runInBand --ci --coverage
 ```
 
-Resultado de la carpeta `Actividad4`:
+Resultado de la carpeta `Actividad4` (ejecucion aislada):
 
 ```text
 Test Suites: 4 passed, 4 total
@@ -53,7 +53,7 @@ La prueba de accesibilidad `__tests__/accessibility/TaskCard.a11y.test.tsx` paso
 | Rendimiento | `Actividad4/src/performanceChecks.ts` y su prueba | Umbrales evaluados |
 | Seguridad OWASP | `Actividad4/src/__tests__/securityAudit.test.ts` | 2 verificaciones estaticas aprobadas |
 | Compatibilidad | `Actividad4/src/compatibilityMatrix.ts` y su prueba | 2 escenarios aprobados |
-| Pipeline | `Actividad4/.github/workflows/tests.yml` | Publicado y ejecutable en GitHub |
+| Pipeline | `.github/workflows/tests.yml` | Configurado; requiere nueva ejecucion tras el push final |
 
 ## 2. Analisis de rendimiento
 
@@ -81,7 +81,7 @@ Se revisaron los servicios y flujos disponibles del proyecto y se evaluaron tres
 |---|---|---|
 | M2, almacenamiento inseguro | No se encontro `AsyncStorage` ni almacenamiento de credenciales en el servicio revisado. Tampoco esta configurado `expo-secure-store`. | Bajo en el flujo actual; si se agregan tokens, usar SecureStore y no guardar contrasenas en texto plano. |
 | M3, comunicacion insegura | `src/services/taskService.ts` usa `https://api.taskmanager.com`; la prueba estatica rechaza URLs `http://`. | Bajo en el codigo revisado. Mantener HTTPS y evaluar certificate pinning en produccion. |
-| M1, exposicion en logs | No se encontraron logs con contrasenas, tokens o claves en el codigo revisado. | Bajo en el alcance analizado. Mantener logs sanitizados y no registrar datos sensibles. |
+| Exposicion de datos en logs (control de seguridad) | No se encontraron logs con contrasenas, tokens o claves en el codigo revisado. | Bajo en el alcance analizado. Mantener logs sanitizados y no registrar datos sensibles. |
 
 La prueba `Actividad4/src/__tests__/securityAudit.test.ts` lee `src/services/taskService.ts` y verifica HTTPS y ausencia de almacenamiento inseguro en ese servicio. Las pruebas adicionales de `__tests__/security/` contienen escenarios de politicas para futuros controles; no se presentan como evidencia de que AES-256, bcrypt, SecureStore o certificate pinning ya esten integrados.
 
@@ -106,20 +106,20 @@ El proyecto raiz tambien conserva `__tests__/contract/taskApi.contract.test.ts`,
 
 ## 5. Pipeline GitHub Actions: CI/CD
 
-El archivo evaluable es `Actividad4/.github/workflows/tests.yml`. Se activa en `push` y `pull_request` sobre `main`, `develop`, `QA`, `master` y `Actividad-4`, permitiendo el flujo academico `develop -> QA -> master` y la validacion de la rama de entrega.
+El archivo evaluable es `.github/workflows/tests.yml`, ubicado en la raiz porque esa es la ubicacion que GitHub Actions reconoce. Se activa en `push` y `pull_request` sobre `main`, `develop`, `QA`, `master` y `Actividad-4`, permitiendo validar el flujo academico `develop -> QA -> master` y la rama de entrega.
 
-El workflow tiene un job `quality-checks` que:
+El workflow tiene tres jobs (`test-suite`, `coverage-check` y `summary`) que:
 
 1. Descarga el repositorio.
 2. Configura Node.js 20 y cache de npm.
 3. Ejecuta `npm ci` desde la raiz del checkout.
-4. Ejecuta lint solo si existe el script.
-5. Ejecuta `npm test -- --coverage --ci`, por lo que valida tests unitarios, componentes, integracion, accesibilidad, seguridad y los tests propios de `Actividad4`.
-6. Sube `coverage/` como artefacto durante 30 dias.
+4. Ejecuta `npm test -- --coverage --ci --passWithNoTests`, por lo que valida tests unitarios, componentes, integracion, accesibilidad, seguridad, contrato y los tests propios de `Actividad4`.
+5. Ejecuta una validacion independiente de las cuatro metricas de cobertura contra 70%.
+6. Publica un resumen del estado y sube `coverage/` como artefacto durante 30 dias.
 
 El umbral de 70% esta configurado en el `jest.config.js` raiz, que es el archivo utilizado por el comando del workflow. Jest hace fallar la ejecucion si alguna metrica global queda por debajo del umbral. El pipeline es integracion continua; no realiza un despliegue automatico, por lo que el termino CD se refiere aqui a la automatizacion de calidad y reportes.
 
-La ejecucion local completa fue exitosa: 18 suites y 85 tests. GitHub muestra una ejecucion exitosa en la rama `Actividad-4`: https://github.com/fernandonb88/Actividad4-FNB/actions/runs/32199191343. Se debe adjuntar una captura de esa pantalla o de una ejecucion posterior despues de subir estos cambios finales.
+La ejecucion local completa fue exitosa: 18 suites y 85 tests. Tambien se verifico en GitHub la ejecucion `32199191343` del repositorio publico, rama `Actividad-4`, commit `ff4b322`: los jobs `Run Test Suite`, `Validate Coverage Threshold` y `Test Execution Summary` terminaron correctamente y se publico el artefacto `coverage-report`. Esa ejecucion corresponde al commit anterior a los ajustes finales de este informe y del workflow; por eso, antes de comprimir la entrega, se debe ejecutar nuevamente el pipeline y anexar una captura del commit final. GitHub mostro advertencias informativas por la transicion de Node 20 en las acciones, pero no fallos de pruebas.
 
 ## 6. Acceso y conclusion
 
@@ -127,4 +127,4 @@ Repositorio: https://github.com/fernandonb88/Actividad4-FNB
 Rama: `Actividad-4`  
 Carpeta evaluada: `Actividad4/`
 
-El repositorio fue confirmado como publico en GitHub. La carpeta contiene pruebas nuevas de la actividad, contrato Zod, analisis de rendimiento, auditoria de seguridad, compatibilidad y workflow. La suite completa pasa y supera el umbral de cobertura. Antes de comprimir la entrega, se debe subir la version final a `Actividad-4` y anexar la captura del workflow exitoso.
+La carpeta contiene pruebas nuevas de la actividad, contrato Zod, analisis de rendimiento, auditoria de seguridad y compatibilidad. La suite completa pasa y supera el umbral de cobertura. La evidencia E2E esta preparada mediante dos flujos Maestro documentados, pero su ejecucion debe realizarse en un entorno que tenga Maestro instalado. Antes de comprimir la entrega, se debe subir la version final a `Actividad-4`, esperar la ejecucion de GitHub Actions y anexar la captura del workflow exitoso correspondiente al commit final. La visibilidad publica del repositorio ya fue verificada; la nueva ejecucion remota debe comprobarse despues del push.
