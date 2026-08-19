@@ -278,9 +278,7 @@ task-manager-testing-lab/
 │   └── app.json                         # Expo app config
 │
 └── Documentation
-  ├── README.md                        # Project documentation
-  ├── Actividad4_Informe_Tecnico.md    # Technical delivery report
-  └── Actividad4_Informe_Final_Para_Word.txt
+  └── README.md                        # Project documentation
 ```
 
 ---
@@ -347,15 +345,13 @@ Status:      ✅ PASSING
 | **Pruebas de Rendimiento** | Actividad4/src/__tests__/performanceChecks.test.ts | Threshold evaluation | ✅ |
 | **Coverage Threshold (70%)** | 84.61% statements / 87.8% branches | Coverage report | ✅ |
 | **GitHub Actions CI/CD** | tests.yml configured | 3-job pipeline | ✅ |
-| **Test Documentation** | README + technical report | 2 main documents | ✅ |
+| **Test Documentation** | README and test files | Test commands and evidence paths | ✅ |
 
 ---
 
 ## 📚 Documentación Disponible
 
-1. **Actividad4_Informe_Tecnico.md** - Informe técnico de la entrega.
-2. **Actividad4_Informe_Final_Para_Word.txt** - Versión de apoyo para copiar a Word.
-3. **README.md** - Descripción y comandos del proyecto.
+1. **README.md** - Descripción y comandos del proyecto.
 
 ---
 

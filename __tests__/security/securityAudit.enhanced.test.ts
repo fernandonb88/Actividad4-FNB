@@ -41,7 +41,9 @@ describe('🔒 Security Audit - OWASP Mobile Top 10', () => {
 
     it('should validate that sensitive fields are never stored unencrypted', () => {
       const sensitiveFields = ['password', 'token', 'apiKey', 'refreshToken'];
-      const storagePolicy = {
+      const storagePolicy: {
+        dataTypes: Record<string, { encrypted: boolean }>;
+      } = {
         dataTypes: {
           password: { encrypted: false }, // ❌ INSEGURO
           token: { encrypted: false },    // ❌ INSEGURO

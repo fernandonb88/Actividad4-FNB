@@ -4,16 +4,10 @@ on:
   push:
     branches:
       - main
-      - develop
-      - QA
-      - master
       - Actividad-4
   pull_request:
     branches:
       - main
-      - develop
-      - QA
-      - master
       - Actividad-4
 
 env:
